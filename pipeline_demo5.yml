@@ -1,12 +1,12 @@
 pipeline {
     agent any
     tools { 
-      maven 'maven3.9'
+      maven 'maven3.9.1'
     }
     stages {
         stage('github clone') {
             steps {
-                git branch: 'main', url: 'https://github.com/cjk2023/cicd-web-project'; 
+               git branch: 'master', url: 'git 'https://github.com/cjk-magic/cicd-jenkins-pipeline.git'; 
             }
         }
         
@@ -21,7 +21,7 @@ pipeline {
 
         stage('deploy') {
             steps {
-               deploy adapters: [tomcat9(credentialsId: 'deployer_user1', path: '', url: 'http://192.168.11.24:8090/')], contextPath: null, war: '**/*.war'
+               deploy adapters: [tomcat9(credentialsId: 'deployer_user1', path: '', url: 'http://[ip 주소]:8090/')], contextPath: null, war: '**/*.war'
             }
         }
     }

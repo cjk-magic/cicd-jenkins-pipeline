@@ -6,7 +6,7 @@ pipeline {
     stages {
         stage('github clone') {
             steps {
-                git branch: 'main', url: 'https://github.com/cjk2023/cicd-web-project'; 
+               git branch: 'master', url: 'git 'https://github.com/cjk-magic/cicd-jenkins-pipeline.git'; 
             }
         }
         
