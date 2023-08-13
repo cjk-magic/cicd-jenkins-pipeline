@@ -3,35 +3,36 @@ pipeline {
     stages {
         stage('Git clone') {
             steps {
+                echo "Git 소스코드 가져오기"
                 git 'https://github.com/cjk-magic/cicd-jenkins-pipeline.git';
             }
         }
 
         stage('Compile') {
             steps {
-                echo "Compiled successfully!";
-                sh './build.sh'
+                echo "컴파일 진행!";
+                sh './demo/compile.sh'
             }
         }
 
         stage('JUnit') {
             steps {
-                echo "JUnit passed successfully!";
-                sh './unit.sh'
+                echo "JUnit 테스트 진행!";
+                sh './demo/JUnit-test.sh'
             }
         }
 
         stage('Code Analysis') {
             steps {
-                echo "Code Analysis completed successfully!";
-                sh './quality.sh'
+                echo "코드 분석 진행!";
+                sh './demo/code-analysis.sh'
             }
         }
 
         stage('Deploy') {
             steps {
-                echo "Deployed successfully!";
-                sh './deploy.sh'
+                echo "배포 진행!";
+                sh './demo/deploy.sh'
             }
         }
     }
