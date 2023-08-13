@@ -1,12 +1,12 @@
 pipeline {
-    agent any
-    tools { 
-      maven 'maven3.9.1'
+    agent any 
+    tools {
+        gradle "Gradle7.4"
     }
     stages {
         stage('github clone') {
             steps {
-               git branch: 'master', url: 'https://github.com/cjk-magic/cicd-demo.git'; 
+            git branch: 'master', url: 'https://github.com/cjk-magic/cicd-demo2.git'; 
             }
         }
         
@@ -14,14 +14,29 @@ pipeline {
             steps {
                 sh '''
                     echo build start
-                    mvn clean compile package -DskipTests=true
+                    gradle clean build 
                 '''
             }
         }
 
         stage('deploy') {
             steps {
-               sshPublisher(publishers: [sshPublisherDesc(configName: 'docker-host', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: '', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: '', remoteDirectorySDF: false, removePrefix: 'target', sourceFiles: 'target/*.war')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
+                sshPublisher(publishers: [sshPublisherDesc(configName: 'ssh-server1', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: '''#!/bin/sh
+CURRENT_PID=$(ps -ef | grep java | grep gradle-springboot-test-* | awk \'{print $2}\')
+echo "Running PID: $CURRENT_PID"
+CURRENT_PID=$(echo "$CURRENT_PID" | head -n 1)
+echo "Running PID: $CURRENT_PID"
+if [ -z "$CURRENT_PID" ] ; then
+      echo "Project is not running"
+else
+      echo "Project is running"
+      kill -9 $CURRENT_PID[0]
+      echo "Project stop"
+fi
+echo "Deploy Project...."
+/opt/java/openjdk/bin/java -jar /work/gradle-springboot-test-0.0.1-SNAPSHOT.jar  &
+echo "Done"
+''', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: '.', remoteDirectorySDF: false, removePrefix: 'build/libs', sourceFiles: 'build/libs/*jar')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
             }
         }
     }
