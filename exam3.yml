@@ -4,7 +4,7 @@ pipeline {
         stage('Git clone') {
             steps {
                 echo "Git 소스코드 가져오기"
-                git 'https://github.com/cjk-magic/cicd-demo.git';
+                git 'https://github.com/cjk-magic/cicd-jenkins-pipeline.git';
             }
         }
 
