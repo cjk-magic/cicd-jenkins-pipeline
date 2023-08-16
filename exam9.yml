@@ -1,0 +1,32 @@
+pipeline {
+    agent none
+    stages {
+        stage('컴파일') {
+          agent { label 'ssh-server1'}
+            steps {
+                echo "컴파일 단계를 수행합니다.";
+            }
+        }
+
+        stage('테스트') {
+          agent { label 'ssh-server2'}
+            steps {
+                echo "JUnit 등의 테스트를 수행합니다!";
+            }
+        }
+
+        stage('코드 분석') {
+          agent { label 'ssh-server2'}
+            steps {
+                echo "코드 분석을 완료하였습니다.!";
+            }
+        }
+
+        stage('배포') {
+          agent { label 'ssh-server1'}
+            steps {
+                echo "결과물을 성공적으로 배포했습니다.";
+            }
+        }
+    }
+}
