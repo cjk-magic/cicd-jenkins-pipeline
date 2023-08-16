@@ -1,0 +1,30 @@
+pipeline {
+    agent any
+    tools { 
+      gradle 'Gradle7.4'
+    }
+    stages {
+        stage('github clone') {
+            steps {
+                git branch: 'master', url: 'https://github.com/cjk-magic/cicd-demo2.git';     
+            }
+        }
+        
+        stage('build') {
+            steps {
+                sh '''
+                    echo build start
+                    gradle clean build 
+                '''
+            }
+        }
+        
+        stage('SonarQube analysis') { 
+            steps {
+                withSonarQubeEnv('SonarQube-Server') { 
+                    sh 'gradle sonar'
+                }
+            }
+        }
+    }
+}
